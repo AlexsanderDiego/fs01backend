@@ -18,22 +18,6 @@ server.use(express.json());
 // Middleware CORS
 server.use(cors());
 
-// let conexao = pool.getConnection();
-// async function conexao1() {
-//   let conexao = await pool.getConnection();
-//   const email = "carlos@email.com";
-
-//   const usuarios = await conexao.query(
-//     `SELECT * FROM usuarios where email = '${email}'`
-//   );
-
-//   console.log(usuarios);
-//   console.log('deu certo')
-//   // return conexao
-// }
-
-// let conn = conexao1()
-
 server.post("/auth/login", async (req, res) => {
   let conexao = await pool.getConnection();
 
