@@ -98,8 +98,8 @@ server.delete("/usuarios/:id", async (req, res) => {
   }
 });
 
-// Atualizando um dado de um usuário por ID
-server.post("/usuarios/:id", async (req, res) => {
+// Atualizando o nome de usuário de um usuário por ID
+server.put("/usuarios/:id", async (req, res) => {
   let conexao = await pool.getConnection();
 
   try {
@@ -114,7 +114,38 @@ server.post("/usuarios/:id", async (req, res) => {
       `SELECT id, nome, email, usuario FROM usuarios where id = '${id}'`
     );
     res.status(201).send(usuarios);
+  } catch (error) {
+    res.status(400).send({ error: error.sqlMessage });
+  }
+});
 
+// Atualizando a senha de um usuário por ID
+server.put("/usuarios/senha/:id", async (req, res) => {
+  let conexao = await pool.getConnection();
+
+  try {
+    const loginUsuario = req.body
+    const id = req.params.id;
+    const senhaAtual = loginUsuario.senhaAtual;
+    const senhaEncriptada = await bcrypt.hash(loginUsuario.senhaNova, 10);
+    const values = `'${senhaEncriptada}'`;
+
+    const resposta = await conexao.query(
+      `SELECT * FROM usuarios  where id = '${id}'`
+    );
+
+    if (await bcrypt.compare(senhaAtual, resposta[0].senha)) {
+      await conexao.query(
+        `UPDATE usuarios SET senha = ${values} where id = ${id}`
+      );
+
+      const usuarios = await conexao.query(
+        `SELECT id, nome, email, usuario FROM usuarios where id = '${id}'`
+      );
+      res.status(201).send(usuarios);
+    } else {
+      res.status(501).send("senha errada");
+    }
   } catch (error) {
     res.status(400).send({ error: error.sqlMessage });
   }
