@@ -8,7 +8,7 @@ const server = express();
 
 // const pool = mariadb.createPool({
 //   host: "localhost",
-//   user: "root",
+//   user: "fMdHt97UqmiE",
 //   password: "12345",
 //   database: "cadastros",
 //   connectionLimit: 5,
