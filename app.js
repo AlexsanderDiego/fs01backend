@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors"); // Adicionando o módulo CORS
 const mariadb = require("mariadb"); // Adicionando o banco de dados Mariadb
 const bcrypt = require("bcrypt"); // Adicionando o encript de senha
+const postgres = require("postgres");
 
 const server = express();
 
@@ -13,11 +14,23 @@ const pool = mariadb.createPool({
   connectionLimit: 5,
 });
 
+const password = 'password'
+
+const sql = postgres({
+  host: "ep-wild-frog-a51dl9jc.us-east-2.aws.neon.tech",
+  database: 'cadastros',
+  username: 'AlexsanderDiego',
+  password: `${password}`,
+  port: 5432,
+  ssl: "require",
+});
+
 server.use(express.json());
 
 // Middleware CORS
 server.use(cors());
 
+//Login
 server.post("/auth/login", async (req, res) => {
   let conexao = await pool.getConnection();
 
@@ -44,11 +57,13 @@ server.post("/auth/login", async (req, res) => {
 
 //Retornando todos os usuários
 server.get("/usuarios", async (req, res) => {
-  let conexao = await pool.getConnection();
+  // let conexao = await pool.getConnection();
+  // const conexao  = await sql.getConnection();
 
-  const usuarios = await conexao.query(
-    `SELECT id, nome, email, usuario FROM usuarios`
-  );
+  // const usuarios = await conexao.query(
+  //   `SELECT id, nome, email, usuario FROM usuarios`
+  // );
+  const usuarios = await sql`SELECT id, nome, email, usuario FROM usuarios`;
   res.send(usuarios);
 });
 
