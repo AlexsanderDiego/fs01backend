@@ -14,7 +14,7 @@ const server = express();
 //   connectionLimit: 5,
 // });
 
-const password = 'password'
+const password = 'password';
 
 const sql = postgres({
   host: "ep-wild-frog-a51dl9jc.us-east-2.aws.neon.tech",
@@ -44,16 +44,17 @@ server.post("/auth/login", async (req, res) => {
 
   if (
     resposta.length  
-    // &&
-    // (await bcrypt.compare(loginUsuario.senha, resposta[0].senha))
+    &&
+    (await bcrypt.compare(loginUsuario.senha, resposta[0].senha))
   ) {
     const usuario = resposta[0];
 
     delete usuario.senha;
-
+    console.log('authenticated login')
     res.send(usuario);
   } else {
     res.status(401).send("Não autorizado");
+    console.log('unauthenticated login')
   }
 });
 
@@ -153,14 +154,19 @@ server.put("/usuarios/senha/:id", async (req, res) => {
     const id = req.params.id;
     const senhaAtual = loginUsuario.senhaAtual;
     const senhaEncriptada = await bcrypt.hash(loginUsuario.senhaNova, 10);
-    const values = `'${senhaEncriptada}'`;
+    const values = `${senhaEncriptada}`;
+
 
     // const resposta = await conexao.query(
     //   `SELECT * FROM usuarios  where id = '${id}'`
     // );
     const resposta = await sql `SELECT * FROM usuarios  where id = ${id}`;
+    console.log(resposta);
 
-    if (await bcrypt.compare(senhaAtual, resposta[0].senha)) {
+    if (
+          //resposta.length 
+          await bcrypt.compare(senhaAtual, resposta[0].senha)
+        ) {
       // await conexao.query(
       //   `UPDATE usuarios SET senha = ${values} where id = ${id}`
       // );
