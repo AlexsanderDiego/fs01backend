@@ -1,3 +1,6 @@
 node_modules
 package-lock.json
+
+//nao commitar o arquivo .env
 .env
+
