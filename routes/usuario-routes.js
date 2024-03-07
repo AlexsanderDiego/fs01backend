@@ -39,16 +39,16 @@ usuarioRoutes.get("/usuarios/:id", async (req, res) => {
 });
 
 //Retornando um único usuário pelo usuario
-usuarioRoutes.get("/usuarios/:usuario", async (req, res) => {
+usuarioRoutes.get("/usuarios/usuario/:usuario", async (req, res) => {
   const usuario = req.params.usuario;
-  const user = await prisma.usuarios.findUnique({
+  const usuarios = await prisma.usuarios.findUnique({
     where: {
       usuario: usuario,
     },
     select: selectFields,
   });
 
-  res.send(user);
+  res.send(usuarios);
 });
 
 //Adicionando Usuario
