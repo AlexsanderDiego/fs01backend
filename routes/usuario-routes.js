@@ -39,7 +39,7 @@ usuarioRoutes.get("/usuarios/:id", async (req, res) => {
 });
 
 //Retornando um único usuário pelo usuario
-usuarioRoutes.get("/perfil/:usuario", async (req, res) => {
+usuarioRoutes.get("/usuarios/usuario/:usuario", async (req, res) => {
   const usuario = req.params.usuario;
   const usuarios = await prisma.usuarios.findUnique({
     where: {
